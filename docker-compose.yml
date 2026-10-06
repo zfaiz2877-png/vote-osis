@@ -1,0 +1,25 @@
+services:
+  # 1. Aplikasi PHP Native
+  app:
+    build: .
+    container_name: php_native_app
+    ports:
+      - "6080:80" # Port 6080 di laptop kamu, port 80 di dalam container
+    networks:
+      - native_net
+    restart: unless-stopped
+
+  # 2. Cloudflare Tunnel
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflare_tunnel_native
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TOKEN}
+    networks:
+      - native_net
+    restart: unless-stopped
+    depends_on:
+      - app
+
+networks:
+  native_net:
+    driver: bridge
