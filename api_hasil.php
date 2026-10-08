@@ -7,7 +7,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 try {
     $totalVotes = (int)$pdo->query('SELECT COUNT(*) FROM votes')->fetchColumn();
     $statement = $pdo->query(
-        'SELECT c.id, COUNT(v.id) AS total
+        'SELECT c.id, c.name, c.no_urut, COUNT(v.id) AS total
          FROM candidates c
          LEFT JOIN votes v ON v.candidate_id = c.id
          GROUP BY c.id
@@ -19,6 +19,8 @@ try {
         $total = (int)$candidate['total'];
         $candidates[] = [
             'id' => (int)$candidate['id'],
+            'name' => (string)$candidate['name'],
+            'no_urut' => (int)$candidate['no_urut'],
             'total' => $total,
             'pct' => $totalVotes > 0 ? round(($total / $totalVotes) * 100, 1) : 0.0,
         ];

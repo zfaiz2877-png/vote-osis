@@ -29,7 +29,7 @@ CREATE TABLE candidates (
 
 CREATE TABLE tokens (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    token_code VARCHAR(10) NOT NULL,
+    token_code VARCHAR(6) NOT NULL,
     status ENUM('tersedia', 'terpakai') NOT NULL DEFAULT 'tersedia',
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
@@ -40,16 +40,13 @@ CREATE TABLE tokens (
 CREATE TABLE votes (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     candidate_id INT UNSIGNED NOT NULL,
-    token_used VARCHAR(10) NOT NULL,
+    token_used VARCHAR(6) NOT NULL,
     voted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     UNIQUE KEY uq_votes_token_used (token_used),
     KEY idx_votes_candidate_id (candidate_id),
     CONSTRAINT fk_votes_candidate
         FOREIGN KEY (candidate_id) REFERENCES candidates (id)
-        ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_votes_token
-        FOREIGN KEY (token_used) REFERENCES tokens (token_code)
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

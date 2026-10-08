@@ -1,5 +1,4 @@
-<?php
-ob_start();
+<?php ob_start();
 
 $isForwardedHttps = ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https';
 $isHttps = $isForwardedHttps || (($_SERVER['HTTPS'] ?? '') === 'on');

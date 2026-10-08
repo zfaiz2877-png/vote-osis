@@ -116,11 +116,14 @@ if ($hasValidatedToken) {
         body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(ellipse at 15% 5%, #ffe3df, transparent 42%), #f7f8fc; font-family: "Segoe UI", system-ui, sans-serif; }
         button, input { font: inherit; }
         .shell { width: min(100% - 32px, 1080px); margin: 0 auto; padding: 36px 0 56px; }
-        .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 46px; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .mark { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 15px; color: #fff; background: var(--primary); box-shadow: 0 10px 24px #ff494933; font-size: 24px; }
+        .top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; margin-bottom: 46px; }
+        .brand { text-align: center; }
         .brand strong { display: block; letter-spacing: .08em; }
         .brand span { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+        .logo-box { display: grid; justify-items: center; gap: 4px; min-width: 64px; color: var(--muted); font-size: 10px; font-weight: 750; }
+        .logo-osis-box { justify-self: end; }
+        .logo-smk, .logo-osis { width: 52px; height: 52px; object-fit: contain; }
+        .logo-fallback { display: none; width: 52px; height: 52px; place-items: center; border: 1px solid var(--line); border-radius: 14px; color: var(--primary); background: #fff; font-size: 12px; font-weight: 900; }
         .admin-link { color: var(--muted); font-size: 13px; text-decoration: none; }
         .hero { max-width: 610px; margin: 0 auto 32px; text-align: center; }
         .eyebrow { color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
@@ -149,17 +152,21 @@ if ($hasValidatedToken) {
         .vote-button:disabled { opacity: .65; cursor: wait; }
         .empty { max-width: 540px; margin: 0 auto; padding: 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--muted); background: #fff; text-align: center; }
         footer { margin-top: 48px; color: var(--muted); font-size: 12px; text-align: center; }
-        @media (max-width: 560px) { .shell { padding-top: 22px; } .top { margin-bottom: 38px; } .photo { height: 215px; } }
+        @media (max-width: 560px) { .shell { padding-top: 22px; }         .top { margin-bottom: 38px; gap: 8px; } .logo-smk, .logo-osis, .logo-fallback { width: 40px; height: 40px; } .logo-box { min-width: 44px; font-size: 9px; } .brand span { font-size: 10px; } .photo { height: 215px; } }
     </style>
 </head>
 <body>
     <main class="shell">
         <header class="top">
-            <div class="brand">
-                <div class="mark" aria-hidden="true">✦</div>
-                <div><strong>OSKANER</strong><span>E-Voting OSIS · SMKN 6 Jember</span></div>
+            <div class="logo-box">
+                <img class="logo-smk" src="assets/logo-smk.png" alt="Logo SMK" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
+                <span class="logo-fallback" aria-hidden="true">SMK</span>
             </div>
-            <a class="admin-link" href="admin.php">Admin</a>
+            <div class="brand"><strong>OSKANER</strong><span>E-Voting OSIS · SMKN 6 Jember</span></div>
+            <div class="logo-box logo-osis-box">
+                <img class="logo-osis" src="assets/logo-osis.png" alt="Logo OSIS" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
+                <span class="logo-fallback" aria-hidden="true">OSIS</span>
+            </div>
         </header>
 
         <section class="hero">
@@ -212,7 +219,7 @@ if ($hasValidatedToken) {
             <?php endif; ?>
         <?php endif; ?>
 
-        <footer>Pemilihan OSIS OSKANER · SMKN 6 Jember</footer>
+        <footer>Pemilihan OSIS OSKANER · SMKN 6 Jember · <a class="admin-link" href="admin.php" style="display:inline">Admin</a></footer>
     </main>
     <script>
         const tokenInput = document.getElementById('token');

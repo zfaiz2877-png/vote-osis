@@ -285,17 +285,27 @@ if (($_SESSION['is_admin'] ?? false) === true && $_SERVER['REQUEST_METHOD'] === 
     } elseif (isset($_POST['reset_total'])) {
         $activeTab = 'tokens';
         try {
-            $pdo->beginTransaction();
-            $pdo->exec('DELETE FROM votes');
-            $pdo->exec('DELETE FROM tokens');
-            $pdo->commit();
+            $pdo->exec('TRUNCATE TABLE votes');
+            $pdo->exec('TRUNCATE TABLE tokens');
             $success = 'Reset berhasil. Seluruh token dan suara telah dihapus; kandidat tetap tersimpan.';
         } catch (Throwable $exception) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
-            }
             error_log('Election reset failed: ' . $exception->getMessage());
-            $error = 'Reset gagal dilakukan. Data pemilihan tidak diubah.';
+            try {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                $pdo->beginTransaction();
+                $pdo->exec('DELETE FROM votes');
+                $pdo->exec('DELETE FROM tokens');
+                $pdo->commit();
+                $success = 'Reset berhasil. Seluruh token dan suara telah dihapus; kandidat tetap tersimpan.';
+            } catch (Throwable $fallbackException) {
+                if ($pdo->inTransaction()) {
+                    $pdo->rollBack();
+                }
+                error_log('Election reset fallback failed: ' . $fallbackException->getMessage());
+                $error = 'Reset gagal dilakukan. Periksa relasi database dan jalankan ulang setelah memperbaiki skema.';
+            }
         }
     }
 }
@@ -331,6 +341,9 @@ if ($loggedIn) {
         .login p { margin: 0 0 25px; color: var(--muted); }
         .dashboard { width: min(100% - 36px, 1240px); margin: 0 auto; padding: 30px 0 60px; }
         .header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .header-identity { display: flex; align-items: center; gap: 14px; }
+        .admin-logos { display: flex; align-items: center; gap: 7px; }
+        .logo-smk, .logo-osis { width: 42px; height: 42px; object-fit: contain; }
         .header h1 { margin: 0; font-size: 26px; }
         .header p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
         .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
@@ -381,7 +394,7 @@ if ($loggedIn) {
         .latest { margin: 14px 0; padding: 14px; border-radius: 10px; background: #f8f9fb; }
         .latest code { display: inline-block; margin: 5px 6px 0 0; padding: 5px 7px; border-radius: 5px; background: #fff; font-weight: 800; letter-spacing: .1em; }
         .logout { border: 0; }
-        @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .header { align-items: flex-start; flex-direction: column; } .form-grid { grid-template-columns: 1fr; } .field.full { grid-column: auto; } .panel { padding: 17px; } }
+        @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } .header { align-items: flex-start; flex-direction: column; } .header-identity { gap: 10px; } .admin-logos { gap: 4px; } .logo-smk, .logo-osis { width: 34px; height: 34px; } .header h1 { font-size: 21px; } .form-grid { grid-template-columns: 1fr; } .field.full { grid-column: auto; } .panel { padding: 17px; } }
     </style>
 </head>
 <body>
@@ -400,7 +413,13 @@ if ($loggedIn) {
 <?php else: ?>
     <main class="dashboard">
         <header class="header">
-            <div><h1>Dashboard Pemilihan</h1><p>OSKANER · SMKN 6 Jember</p></div>
+            <div class="header-identity">
+                <div class="admin-logos">
+                    <img class="logo-smk" src="assets/logo-smk.png" alt="Logo SMK" onerror="this.hidden=true">
+                    <img class="logo-osis" src="assets/logo-osis.png" alt="Logo OSIS" onerror="this.hidden=true">
+                </div>
+                <div><h1>Dashboard Pemilihan</h1><p>OSKANER · SMKN 6 Jember</p></div>
+            </div>
             <div class="actions">
                 <a class="button secondary" href="hasil.php" target="_blank" rel="noopener">Lihat hasil live</a>
                 <form method="post">
