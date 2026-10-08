@@ -5,6 +5,12 @@ services:
     container_name: php_native_app
     ports:
       - "6080:80" # Port 6080 di laptop kamu, port 80 di dalam container
+    environment:
+      DB_NAME: ${DB_NAME:-db_voting_osis}
+      DB_USER: ${DB_USER:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - native_net
     restart: unless-stopped

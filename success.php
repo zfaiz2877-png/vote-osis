@@ -2,30 +2,28 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Terima Kasih - OSKANER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8fc">
+    <title>Suara Tercatat — OSKANER</title>
     <style>
-        :root { --primary: #FF4949; --primary-dark: #E63E3E; --primary-light: #FFE5E5; --success: #48BB78; --success-light: #C6F6D5; --text: #1A202C; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background: linear-gradient(135deg, var(--success-light) 0%, var(--primary-light) 100%); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; text-align: center; }
-        .container { max-width: 600px; padding: 50px 40px; background: white; border-radius: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); }
-        .icon { font-size: 100px; margin-bottom: 25px; animation: bounce 1s ease; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        h1 { color: var(--success); font-size: 36px; margin-bottom: 15px; font-weight: 900; letter-spacing: 2px; }
-        p { color: var(--text); font-size: 18px; margin-bottom: 40px; line-height: 1.6; }
-        .btn-reset { display: inline-block; padding: 24px 50px; background: var(--primary); color: white; text-decoration: none; border-radius: 20px; font-size: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 10px 30px rgba(255, 73, 73, 0.3); transition: all 0.3s; }
-        .btn-reset:hover { background: var(--primary-dark); transform: translateY(-3px); }
-        .thank-note { margin-top: 30px; padding: 20px; background: var(--primary-light); border-radius: 16px; }
-        .thank-note p { font-size: 14px; margin: 0; color: var(--text); }
+        * { box-sizing: border-box; }
+        body { display: grid; min-height: 100vh; place-items: center; margin: 0; padding: 20px; color: #182230; background: radial-gradient(ellipse at 15% 5%, #d9f8e9, transparent 40%), #f7f8fc; font-family: "Segoe UI", system-ui, sans-serif; }
+        .card { width: min(100%, 520px); padding: clamp(28px, 7vw, 52px); border: 1px solid #ffffff; border-radius: 26px; background: #ffffffed; box-shadow: 0 24px 70px #18223014; text-align: center; }
+        .check { display: grid; width: 84px; height: 84px; place-items: center; margin: 0 auto 22px; border-radius: 50%; color: #087443; background: #dcfce7; box-shadow: 0 0 0 12px #dcfce755; font-size: 42px; font-weight: 900; }
+        h1 { margin: 0 0 12px; font-size: clamp(26px, 5vw, 34px); letter-spacing: -.03em; }
+        p { margin: 0 auto 27px; color: #667085; line-height: 1.7; }
+        .primary { display: block; padding: 15px 20px; border-radius: 12px; color: #fff; background: #FF4949; font-weight: 850; text-decoration: none; transition: transform .2s, background .2s; }
+        .primary:hover { transform: translateY(-2px); background: #e83e3e; }
+        .secondary { display: inline-block; margin-top: 17px; color: #667085; font-size: 13px; font-weight: 700; text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon">✅</div>
-        <h1>SUARA ANDA TERCATAT!</h1>
-        <p>Terima kasih telah berpartisipasi dalam<br><strong>Pemilihan Ketua OSIS OSKANER</strong><br>SMKN 6 Jember 2025/2026</p>
-        <a href="reset.php" class="btn-reset">Selesai / Siswa Berikutnya →</a>
-        <div class="thank-note"><p>🎯 Hak pilih Anda telah digunakan. Silakan informasikan kepada panitia.</p></div>
-    </div>
+    <main class="card">
+        <div class="check" aria-hidden="true">✓</div>
+        <h1>Suara Anda tercatat!</h1>
+        <p>Terima kasih telah berpartisipasi dalam pemilihan Ketua OSIS OSKANER SMKN 6 Jember. Pilihan Anda tersimpan secara rahasia.</p>
+        <a class="primary" href="index.php">Kembali ke awal</a>
+        <a class="secondary" href="hasil.php">Lihat hasil sementara</a>
+    </main>
 </body>
 </html>
