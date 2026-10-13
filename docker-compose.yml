@@ -25,6 +25,7 @@ services:
     restart: unless-stopped
     depends_on:
       - app
+    
 
 networks:
   native_net:
