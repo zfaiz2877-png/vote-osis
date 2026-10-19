@@ -42,6 +42,9 @@ $barGradients = [
         .live { display: flex; align-items: center; justify-self: end; gap: 8px; color: #86efac; font-size: 10px; font-weight: 850; letter-spacing: .1em; }
         .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 13px #4ade80; animation: pulse 1.5s infinite; }
         @keyframes pulse { 50% { opacity: .4; } }
+        @keyframes panel-enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes item-enter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes bar-rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
         .hero { height: 142px; display: grid; align-content: center; justify-items: center; gap: 4px; padding: 8px 14px; text-align: center; }
         .eyebrow { color: #c4b5fd; font-size: 10px; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
         .hero h2 { margin: 2px 0; font-size: clamp(23px, 3vw, 34px); letter-spacing: -.035em; }
@@ -50,10 +53,11 @@ $barGradients = [
         .total-label { color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .08em; text-align: left; }
         .total-value { display: inline-block; min-width: 25px; color: #fff; font-size: 21px; font-weight: 900; font-variant-numeric: tabular-nums; }
         .results-layout { height: calc(100svh - 244px); min-height: 390px; display: grid; grid-template-columns: minmax(360px, .92fr) minmax(440px, 1.25fr); gap: 16px; width: min(100% - 36px, 1600px); margin: 0 auto; }
-        .panel { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: clamp(16px, 2vw, 26px); overflow: hidden; border: 1px solid #ffffff12; border-radius: 20px; background: linear-gradient(145deg, #ffffff0c, #ffffff05); box-shadow: 0 20px 60px #00000019; }
+        .panel { min-width: 0; min-height: 0; display: flex; flex-direction: column; padding: clamp(16px, 2vw, 26px); overflow: hidden; border: 1px solid #ffffff12; border-radius: 20px; background: linear-gradient(145deg, #ffffff0c, #ffffff05); box-shadow: 0 20px 60px #00000019; animation: panel-enter .7s cubic-bezier(.2,.8,.2,1) both; }
+        .panel:nth-child(2) { animation-delay: .12s; }
         .panel-title { flex: 0 0 auto; margin: 0 0 14px; color: #e2e8f0; font-size: clamp(12px, 1.15vw, 16px); font-weight: 850; letter-spacing: .05em; }
         .ranking-list { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: stretch; gap: 10px; overflow-x: hidden; overflow-y: auto; padding: 1px 4px 4px 1px; scrollbar-color: #64748b #ffffff0a; scrollbar-width: thin; }
-        .ranking-card { flex: 0 0 auto; min-width: 0; min-height: 88px; display: grid; grid-template-columns: 34px 68px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #ffffff14; border-radius: 14px; background: #ffffff08; transition: border-color .35s, background .35s, box-shadow .35s, transform .55s cubic-bezier(.2,.8,.2,1); }
+        .ranking-card { flex: 0 0 auto; min-width: 0; min-height: 88px; display: grid; grid-template-columns: 34px 68px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #ffffff14; border-radius: 14px; background: #ffffff08; transition: border-color .35s, background .35s, box-shadow .35s, transform .55s cubic-bezier(.2,.8,.2,1); animation: item-enter .55s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: calc(var(--entry-delay, 0ms) + .12s); }
         .rank-badge { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #ffffff1c; border-radius: 10px; color: #cbd5e1; background: #ffffff0a; font-size: 12px; font-weight: 850; font-variant-numeric: tabular-nums; }
         .ranking-card.winner { border-color: #ffd70096; background: linear-gradient(100deg, #ffd70018, #ffffff08 70%); box-shadow: 0 0 23px #ffd70012, inset 0 0 0 1px #ffd70028; }
         .ranking-card.winner .rank-badge { border-color: #ffd70070; color: #1f2937; background: linear-gradient(145deg, #fff2a8, #eab308); }
@@ -63,23 +67,27 @@ $barGradients = [
         .candidate-info { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
         .candidate-name { display: block; max-width: 100%; color: #e2e8f0; font-size: clamp(14px, 1.25vw, 18px); font-weight: 850; line-height: 1.25; overflow-wrap: anywhere; }
         .winner .candidate-name { color: #fff2b3; }
-        .candidate-number { display: block; color: var(--muted); font-size: 11px; font-weight: 650; line-height: 1.3; }
+        .candidate-number { display: inline-flex; align-items: center; min-height: 21px; padding: 3px 8px; border: 1px solid #a78bfa55; border-radius: 7px; color: #ddd6fe; background: #8b5cf61c; font-size: 10px; font-weight: 850; line-height: 1.3; letter-spacing: .035em; }
+        .leader-label { display: inline-flex; align-items: center; gap: 4px; padding: 3px 7px; border: 1px solid #ffd70070; border-radius: 999px; color: #fff2b3; background: #ffd70018; font-size: 9px; font-weight: 900; letter-spacing: .06em; }
+        .leader-label[hidden] { display: none; }
         .rank-stats { width: 96px; min-width: 96px; display: flex; align-items: baseline; justify-content: flex-end; gap: 7px; white-space: nowrap; font-variant-numeric: tabular-nums; }
         .rank-count { color: #f8fafc; font-size: clamp(16px, 1.45vw, 21px); font-weight: 900; }
         .rank-pct { color: var(--muted); font-size: 11px; }
         .ranking-card.winner .rank-count { color: #fff2b3; }
         .chart-area { position: relative; flex: 1; min-height: 0; display: flex; align-items: stretch; padding: 5px 4px 0; }
-        .chart-gridlines { position: absolute; inset: 12px 4px 42px; pointer-events: none; background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), #ffffff12 calc(25% - 1px), #ffffff12 25%); }
+        .chart-gridlines { position: absolute; inset: 12px 4px 50px; pointer-events: none; background: repeating-linear-gradient(to top, transparent 0, transparent calc(25% - 1px), #ffffff12 calc(25% - 1px), #ffffff12 25%); }
         .chart-columns { position: relative; z-index: 1; flex: 1; min-width: 0; display: grid; grid-template-columns: repeat(<?= max(1, count($candidates)) ?>, minmax(0, 1fr)); gap: clamp(12px, 2.3vw, 30px); border-bottom: 1px solid #ffffff45; }
-        .chart-column { min-width: 0; display: grid; grid-template-rows: 34px minmax(0, 1fr) 38px; justify-items: center; gap: 8px; transition: transform .55s cubic-bezier(.2,.8,.2,1); }
+        .chart-column { min-width: 0; display: grid; grid-template-rows: 34px minmax(0, 1fr) 46px; justify-items: center; gap: 8px; transition: transform .55s cubic-bezier(.2,.8,.2,1); animation: item-enter .55s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: calc(var(--entry-delay, 0ms) + .18s); }
         .bar-values { align-self: end; text-align: center; font-variant-numeric: tabular-nums; }
         .vote-count { display: inline-block; color: #f8fafc; font-size: clamp(16px, 1.7vw, 24px); font-weight: 900; }
         .percentage { display: block; margin-top: 1px; color: var(--muted); font-size: clamp(10px, .9vw, 12px); font-weight: 750; }
         .bar-track { width: min(74%, 112px); height: 100%; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; border-right: 1px solid #ffffff0a; border-left: 1px solid #ffffff0a; background: #ffffff05; }
-        .bar-fill { width: 100%; height: var(--bar-height, 0%); min-height: 0; border: 1px solid #ffffff21; border-bottom: 0; border-radius: 12px 12px 0 0; background: var(--bar-gradient); transition: height .7s cubic-bezier(.2,.8,.2,1), background .35s ease, box-shadow .35s ease; }
+        .bar-fill { width: 100%; height: var(--bar-height, 0%); min-height: 0; border: 1px solid #ffffff21; border-bottom: 0; border-radius: 12px 12px 0 0; background: var(--bar-gradient); transform: scaleY(0); transform-origin: bottom; animation: bar-rise .9s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--entry-delay, 0ms) + .25s); transition: height .7s cubic-bezier(.2,.8,.2,1), background .35s ease, box-shadow .35s ease; }
         .chart-column.winner .bar-fill { background: linear-gradient(0deg, #a87900, #FFD700 65%, #fff0a0); box-shadow: 0 0 25px #ffd70057; }
-        .chart-label { width: 100%; align-self: center; overflow: hidden; color: #dbe4f0; font-size: clamp(10px, .95vw, 13px); font-weight: 750; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
-        .chart-column.winner .chart-label { color: #fff2b3; }
+        .chart-label { width: 100%; min-width: 0; display: grid; align-content: center; gap: 2px; overflow: hidden; text-align: center; }
+        .chart-number { overflow: hidden; color: #c4b5fd; font-size: clamp(9px, .8vw, 11px); font-weight: 900; letter-spacing: .035em; text-overflow: ellipsis; white-space: nowrap; }
+        .chart-candidate-name { overflow: hidden; color: #dbe4f0; font-size: clamp(10px, .95vw, 13px); font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+        .chart-column.winner .chart-number, .chart-column.winner .chart-candidate-name { color: #fff2b3; }
         .flash-number { animation: number-flash .85s ease; }
         @keyframes number-flash { 35% { color: #bbf7d0; text-shadow: 0 0 18px #4ade80; } }
         .empty { grid-column: 1 / -1; align-self: center; padding: 32px 15px; color: var(--muted); text-align: center; }
@@ -110,12 +118,12 @@ $barGradients = [
             .rank-badge { width: 28px; height: 28px; font-size: 11px; }
             .candidate-photo { width: 56px; height: 56px; flex-basis: 56px; border-radius: 10px; }
             .candidate-name { font-size: 14px; }
-            .candidate-number { font-size: 10px; }
+            .candidate-number { min-height: 19px; padding: 2px 6px; font-size: 9px; }
             .rank-stats { width: 78px; min-width: 78px; gap: 4px; }
             .rank-count { font-size: 15px; }
             .rank-pct { font-size: 9px; }
             .chart-columns { gap: 7px; }
-            .chart-column { grid-template-rows: 32px minmax(0, 1fr) 34px; gap: 5px; }
+            .chart-column { grid-template-rows: 32px minmax(0, 1fr) 44px; gap: 5px; }
             .bar-track { width: 82%; }
             .vote-count { font-size: 15px; }
             .percentage { font-size: 10px; }
@@ -151,11 +159,12 @@ $barGradients = [
                     <?php
                     $total = (int)$candidate['total'];
                     $percentage = $totalVotes > 0 ? round(($total / $totalVotes) * 100, 1) : 0;
+                    $isLeader = $highestVotes > 0 && $total === $highestVotes;
                     $photo = !empty($candidate['photo_url']) && $candidate['photo_url'] !== 'default.jpg'
                         ? 'upload/' . rawurlencode(basename($candidate['photo_url']))
                         : '';
                     ?>
-                    <article class="ranking-card<?= $highestVotes > 0 && $index === 0 ? ' winner' : '' ?>" data-id="<?= (int)$candidate['id'] ?>" aria-label="Peringkat <?= $index + 1 ?>, <?= sanitize($candidate['name']) ?>, <?= number_format($total) ?> suara">
+                    <article class="ranking-card<?= $isLeader ? ' winner' : '' ?>" data-id="<?= (int)$candidate['id'] ?>" style="--entry-delay: <?= (int)$index * 90 ?>ms" aria-label="Peringkat <?= $index + 1 ?>, kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>, <?= number_format($total) ?> suara<?= $isLeader ? ', perolehan tertinggi' : '' ?>">
                         <span class="rank-badge" aria-hidden="true">#<?= $index + 1 ?></span>
                         <?php if ($photo !== ''): ?>
                             <img class="candidate-photo" src="<?= sanitize($photo) ?>" alt="Foto <?= sanitize($candidate['name']) ?>" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
@@ -165,7 +174,8 @@ $barGradients = [
                         <?php endif; ?>
                         <div class="candidate-info">
                             <span class="candidate-name"><span class="name-text"><?= sanitize($candidate['name']) ?></span></span>
-                            <span class="candidate-number">Nomor urut <?= (int)$candidate['no_urut'] ?></span>
+                            <span class="candidate-number">NOMOR KANDIDAT <?= (int)$candidate['no_urut'] ?></span>
+                            <span class="leader-label"<?= $isLeader ? '' : ' hidden' ?>>★ SUARA TERTINGGI</span>
                         </div>
                         <div class="rank-stats"><span class="rank-count"><?= number_format($total) ?></span><span class="rank-pct"><?= number_format($percentage, 1) ?>%</span></div>
                     </article>
@@ -183,17 +193,21 @@ $barGradients = [
                         $total = (int)$candidate['total'];
                         $percentage = $totalVotes > 0 ? round(($total / $totalVotes) * 100, 1) : 0;
                         $height = $highestVotes > 0 ? round(($total / $highestVotes) * 100, 1) : 0;
+                        $isLeader = $highestVotes > 0 && $total === $highestVotes;
                         $gradient = $barGradients[$index % count($barGradients)];
                         ?>
-                        <article class="chart-column<?= $highestVotes > 0 && $index === 0 ? ' winner' : '' ?>" data-id="<?= (int)$candidate['id'] ?>">
+                        <article class="chart-column<?= $isLeader ? ' winner' : '' ?>" data-id="<?= (int)$candidate['id'] ?>" style="--entry-delay: <?= (int)$index * 90 ?>ms">
                             <div class="bar-values">
                                 <span class="vote-count"><?= number_format($total) ?></span>
                                 <span class="percentage"><?= number_format($percentage, 1) ?>%</span>
                             </div>
-                            <div class="bar-track" role="progressbar" aria-label="Jumlah suara <?= sanitize($candidate['name']) ?>" aria-valuenow="<?= $total ?>" aria-valuemin="0">
-                                <div class="bar-fill" style="--bar-gradient: <?= $gradient ?>; --bar-height: <?= $height ?>%"></div>
+                            <div class="bar-track" role="progressbar" aria-label="Jumlah suara kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>" aria-valuenow="<?= $total ?>" aria-valuemin="0">
+                                <div class="bar-fill" style="--bar-gradient: <?= $gradient ?>; --bar-height: <?= $height ?>%; --entry-delay: <?= (int)$index * 90 ?>ms"></div>
                             </div>
-                            <span class="bar-label" title="<?= sanitize($candidate['name']) ?>"><?= sanitize($candidate['name']) ?></span>
+                            <span class="chart-label" title="Nomor kandidat <?= (int)$candidate['no_urut'] ?>: <?= sanitize($candidate['name']) ?>">
+                                <span class="chart-number">NOMOR <?= (int)$candidate['no_urut'] ?></span>
+                                <span class="chart-candidate-name"><?= sanitize($candidate['name']) ?></span>
+                            </span>
                         </article>
                     <?php endforeach; ?>
                 </div>
@@ -282,22 +296,24 @@ $barGradients = [
 
                 card.querySelector('.rank-pct').textContent = `${candidate.pct.toFixed(1)}%`;
                 card.querySelector('.name-text').textContent = candidate.name;
-                card.querySelector('.candidate-number').textContent = `Nomor urut ${candidate.no_urut}`;
+                card.querySelector('.candidate-number').textContent = `NOMOR KANDIDAT ${candidate.no_urut}`;
                 card.setAttribute(
                     'aria-label',
-                    `Peringkat ${index + 1}, ${candidate.name}, ${candidate.total.toLocaleString('id-ID')} suara`
+                    `Peringkat ${index + 1}, kandidat nomor ${candidate.no_urut}, ${candidate.name}, ${candidate.total.toLocaleString('id-ID')} suara${payload.total_votes > 0 && candidate.total === highest ? ', perolehan tertinggi' : ''}`
                 );
                 column.querySelector('.percentage').textContent = `${candidate.pct.toFixed(1)}%`;
-                column.querySelector('.bar-track').setAttribute('aria-label', `Jumlah suara ${candidate.name}`);
+                column.querySelector('.bar-track').setAttribute('aria-label', `Jumlah suara kandidat nomor ${candidate.no_urut}, ${candidate.name}`);
                 column.querySelector('.bar-track').setAttribute('aria-valuenow', String(candidate.total));
                 column.querySelector('.bar-fill').style.setProperty(
                     '--bar-height',
                     `${highest > 0 ? (candidate.total / highest) * 100 : 0}%`
                 );
-                column.querySelector('.bar-label').textContent = candidate.name;
-                column.querySelector('.bar-label').title = candidate.name;
-                const isWinner = payload.total_votes > 0 && index === 0;
+                column.querySelector('.chart-number').textContent = `NOMOR ${candidate.no_urut}`;
+                column.querySelector('.chart-candidate-name').textContent = candidate.name;
+                column.querySelector('.chart-label').title = `Nomor kandidat ${candidate.no_urut}: ${candidate.name}`;
+                const isWinner = payload.total_votes > 0 && candidate.total === highest;
                 card.classList.toggle('winner', isWinner);
+                card.querySelector('.leader-label').hidden = !isWinner;
                 column.classList.toggle('winner', isWinner);
                 orderedCards.push(card);
                 orderedColumns.push(column);

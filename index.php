@@ -100,7 +100,7 @@ if ($error === '' && isset($_SESSION['current_token'])) {
 }
 
 if ($hasValidatedToken) {
-    $candidates = $pdo->query('SELECT id, no_urut, name, photo_url, visi FROM candidates ORDER BY no_urut')->fetchAll();
+    $candidates = $pdo->query('SELECT id, no_urut, name, photo_url, visi, misi, proker FROM candidates ORDER BY no_urut')->fetchAll();
 }
 ?>
 <!DOCTYPE html>
@@ -147,7 +147,9 @@ if ($hasValidatedToken) {
         .candidate-body { display: flex; flex: 1; flex-direction: column; padding: 20px; }
         .number { align-self: flex-start; margin-bottom: 9px; padding: 5px 10px; border-radius: 99px; color: #a92d2d; background: #fff0ed; font-size: 12px; font-weight: 800; }
         .candidate h3 { margin: 0 0 10px; font-size: 21px; }
-        .vision { flex: 1; margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.65; white-space: pre-line; }
+        .candidate-programs { display: grid; gap: 16px; margin: 8px 0 20px; }
+        .program-section h4 { margin: 0 0 6px; color: var(--ink); font-size: 14px; }
+        .program-section p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; white-space: pre-line; overflow-wrap: anywhere; }
         .vote-button { width: 100%; padding: 15px; border: 0; border-radius: 12px; color: white; background: var(--primary); font-weight: 850; cursor: pointer; }
         .vote-button:disabled { opacity: .65; cursor: wait; }
         .empty { max-width: 540px; margin: 0 auto; padding: 22px; border: 1px solid var(--line); border-radius: 16px; color: var(--muted); background: #fff; text-align: center; }
@@ -206,7 +208,20 @@ if ($hasValidatedToken) {
                             <div class="candidate-body">
                                 <span class="number">NOMOR URUT <?= (int)$candidate['no_urut'] ?></span>
                                 <h3><?= sanitize($candidate['name']) ?></h3>
-                                <p class="vision"><?= sanitize($candidate['visi']) ?></p>
+                                <div class="candidate-programs">
+                                    <section class="program-section">
+                                        <h4>Visi</h4>
+                                        <p><?= sanitize($candidate['visi']) ?></p>
+                                    </section>
+                                    <section class="program-section">
+                                        <h4>Misi</h4>
+                                        <p><?= sanitize($candidate['misi']) ?></p>
+                                    </section>
+                                    <section class="program-section">
+                                        <h4>Program Kerja</h4>
+                                        <p><?= sanitize($candidate['proker']) ?></p>
+                                    </section>
+                                </div>
                                 <form method="post" data-candidate-name="<?= sanitize($candidate['name']) ?>">
                                     <input type="hidden" name="csrf_token" value="<?= sanitize(csrfToken()) ?>">
                                     <input type="hidden" name="candidate_id" value="<?= (int)$candidate['id'] ?>">
