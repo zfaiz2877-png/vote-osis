@@ -20,6 +20,6 @@ Untuk deployment publik, gunakan akun MySQL khusus dengan password kuat, ganti p
 
 ## Alur aplikasi
 
-Siswa memasukkan token enam karakter pada `index.php`, memilih kandidat pada halaman yang sama, lalu mengirim suara anonim. Dashboard `admin.php` mengelola kandidat, token, reset pemungutan suara, dan pencetakan token tersedia. Dialog cetak terbuka otomatis dari menu cetak; daftar token dapat diunduh sebagai CSV UTF-8 yang dapat dibuka di Microsoft Excel. `hasil.php` memuat pembaruan hasil melalui `api_hasil.php` setiap tiga detik.
+Siswa memasukkan token enam karakter pada `index.php`, memilih kandidat pada halaman yang sama, lalu mengirim suara anonim. Dashboard `admin.php` mengelola kandidat, token, reset pemungutan suara, dan pencetakan token tersedia. Menghapus kandidat juga menghapus semua suara yang tercatat untuk kandidat tersebut sehingga total suara berkurang. Dialog cetak terbuka otomatis dari menu cetak; daftar token dapat diunduh sebagai CSV UTF-8 yang dapat dibuka di Microsoft Excel. `hasil.php` memuat pembaruan hasil melalui `api_hasil.php` setiap tiga detik.
 
 Reset dari dashboard menjalankan `TRUNCATE` pada token dan suara, tetapi mempertahankan kandidat (dengan fallback transaksi `DELETE` untuk skema lama yang masih memiliki foreign key token). Reset database menggunakan `database.sql` menghapus seluruh data tabel dan mengembalikan akun awal.

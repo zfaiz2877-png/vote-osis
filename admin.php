@@ -190,18 +190,15 @@ if (($_SESSION['is_admin'] ?? false) === true && $_SERVER['REQUEST_METHOD'] === 
                     $pdo->rollBack();
                     $error = 'Kandidat tidak ditemukan.';
                 } else {
-                    $voteCheck = $pdo->prepare('SELECT COUNT(*) FROM votes WHERE candidate_id = ?');
-                    $voteCheck->execute([$id]);
-                    if ((int)$voteCheck->fetchColumn() > 0) {
-                        $pdo->rollBack();
-                        $error = 'Kandidat dengan suara masuk tidak dapat dihapus.';
-                    } else {
-                        $delete = $pdo->prepare('DELETE FROM candidates WHERE id = ?');
-                        $delete->execute([$id]);
-                        $pdo->commit();
-                        removeCandidatePhoto($candidate['photo_url']);
-                        $success = 'Kandidat berhasil dihapus.';
-                    }
+                    $deleteVotes = $pdo->prepare('DELETE FROM votes WHERE candidate_id = ?');
+                    $deleteVotes->execute([$id]);
+                    $deletedVotes = $deleteVotes->rowCount();
+
+                    $delete = $pdo->prepare('DELETE FROM candidates WHERE id = ?');
+                    $delete->execute([$id]);
+                    $pdo->commit();
+                    removeCandidatePhoto($candidate['photo_url']);
+                    $success = 'Kandidat berhasil dihapus beserta ' . number_format($deletedVotes) . ' suara terkait.';
                 }
             } catch (Throwable $exception) {
                 if ($pdo->inTransaction()) {
@@ -485,7 +482,7 @@ if ($loggedIn) {
                                     data-visi="<?= sanitize($candidate['visi']) ?>"
                                     data-misi="<?= sanitize($candidate['misi']) ?>"
                                     data-proker="<?= sanitize($candidate['proker']) ?>">Ubah</button>
-                                <form method="post" onsubmit="return confirm('Hapus kandidat ini? Kandidat yang sudah menerima suara tidak dapat dihapus.');">
+                                <form method="post" onsubmit="return confirm('Hapus kandidat ini beserta semua suara yang sudah diterima? Total suara akan berkurang dan tindakan ini tidak dapat dibatalkan.');">
                                     <input type="hidden" name="csrf_token" value="<?= sanitize(csrfToken()) ?>">
                                     <input type="hidden" name="active_tab" value="candidates">
                                     <input type="hidden" name="candidate_id" value="<?= (int)$candidate['id'] ?>">
