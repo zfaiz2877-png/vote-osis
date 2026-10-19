@@ -26,6 +26,7 @@ try {
         $username,
         $password,
         [
+            PDO::ATTR_TIMEOUT => 5,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
@@ -40,6 +41,19 @@ try {
 function sanitize($value)
 {
     return htmlspecialchars(trim((string)$value), ENT_QUOTES, 'UTF-8');
+}
+
+function assetUrl($path)
+{
+    $relativePath = ltrim(str_replace('\\', '/', (string)$path), '/');
+    $scriptDirectory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $basePath = rtrim($scriptDirectory, '/.');
+    $assetPath = __DIR__ . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relativePath);
+    $version = is_file($assetPath) ? filemtime($assetPath) : false;
+
+    return ($basePath !== '' ? $basePath : '')
+        . '/' . $relativePath
+        . ($version !== false ? '?v=' . $version : '');
 }
 
 function csrfToken()

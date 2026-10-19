@@ -415,8 +415,8 @@ if ($loggedIn) {
         <header class="header">
             <div class="header-identity">
                 <div class="admin-logos">
-                    <img class="logo-smk" src="assets/logo-smk.png" alt="Logo SMK" onerror="this.hidden=true">
-                    <img class="logo-osis" src="assets/logo-osis.png" alt="Logo OSIS" onerror="this.hidden=true">
+                    <img class="logo-smk" src="<?= sanitize(assetUrl('assets/logo-smk.png')) ?>" alt="Logo SMK" onerror="this.hidden=true">
+                    <img class="logo-osis" src="<?= sanitize(assetUrl('assets/logo-osis.png')) ?>" alt="Logo OSIS" onerror="this.hidden=true">
                 </div>
                 <div><h1>Dashboard Pemilihan</h1><p>OSKANER · SMKN 6 Jember</p></div>
             </div>
@@ -512,6 +512,7 @@ if ($loggedIn) {
             <?php endif; ?>
             <div class="actions" style="margin-top:20px">
                 <button class="button secondary" type="button" id="open-print">Cetak token tersedia</button>
+                <a class="button secondary" href="export_token.php?export=1">Unduh Excel (CSV)</a>
                 <form method="post" onsubmit="return confirm('Hapus semua token yang masih tersedia? Token yang pernah dipakai dan suara tidak akan dihapus.');">
                     <input type="hidden" name="csrf_token" value="<?= sanitize(csrfToken()) ?>">
                     <input type="hidden" name="active_tab" value="tokens">
@@ -559,7 +560,10 @@ if ($loggedIn) {
             <h2>Cetak token</h2>
             <p class="muted">Token yang dicetak hanya yang masih tersedia. Format cetak menggunakan kertas A4 dengan 4 kolom per baris.</p>
             <p><strong><?= number_format($stats['available']) ?></strong> token tersedia untuk dicetak.</p>
-            <button class="button" type="button" id="open-print-tab">Buka layout cetak</button>
+            <div class="actions">
+                <button class="button" type="button" id="open-print-tab">Cetak sekarang</button>
+                <a class="button secondary" href="export_token.php?export=1">Unduh Excel (CSV)</a>
+            </div>
         </section>
     </main>
     <script>

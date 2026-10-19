@@ -49,5 +49,8 @@ $tokens = $pdo->query(
             </div>
         <?php endforeach; ?>
     </main>
+    <script>
+        window.addEventListener('load', () => window.print(), {once: true});
+    </script>
 </body>
 </html>

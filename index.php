@@ -159,12 +159,12 @@ if ($hasValidatedToken) {
     <main class="shell">
         <header class="top">
             <div class="logo-box">
-                <img class="logo-smk" src="assets/logo-smk.png" alt="Logo SMK" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
+                <img class="logo-smk" src="<?= sanitize(assetUrl('assets/logo-smk.png')) ?>" alt="Logo SMK" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
                 <span class="logo-fallback" aria-hidden="true">SMK</span>
             </div>
             <div class="brand"><strong>OSKANER</strong><span>E-Voting OSIS · SMKN 6 Jember</span></div>
             <div class="logo-box logo-osis-box">
-                <img class="logo-osis" src="assets/logo-osis.png" alt="Logo OSIS" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
+                <img class="logo-osis" src="<?= sanitize(assetUrl('assets/logo-osis.png')) ?>" alt="Logo OSIS" onerror="this.hidden=true;this.nextElementSibling.style.display='grid'">
                 <span class="logo-fallback" aria-hidden="true">OSIS</span>
             </div>
         </header>
