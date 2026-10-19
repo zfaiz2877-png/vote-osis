@@ -142,7 +142,15 @@ if ($hasValidatedToken) {
         .pick-heading p { margin: 0; color: var(--muted); }
         .candidate-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); gap: 18px; }
         .candidate { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); box-shadow: 0 12px 30px #1822300b; }
-        .photo { width: 100%; height: 240px; object-fit: cover; background: #f1f2f6; }
+        .photo { width: 100%; height: 240px; object-fit: contain; background: #f1f2f6; }
+        img.photo { cursor: zoom-in; }
+        img.photo:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
+        .photo-dialog { width: min(94vw, 1000px); max-width: none; max-height: 92svh; padding: 52px 16px 16px; overflow: visible; border: 1px solid #18223024; border-radius: 18px; color: var(--ink); background: #fff; box-shadow: 0 24px 90px #18223066; }
+        .photo-dialog::backdrop { background: #101828d9; backdrop-filter: blur(7px); }
+        .photo-dialog img { display: block; width: 100%; max-height: calc(92svh - 84px); object-fit: contain; }
+        .photo-dialog-caption { margin: 12px 0 0; color: var(--muted); font-size: 14px; font-weight: 750; text-align: center; }
+        .photo-dialog-close { position: absolute; top: 10px; right: 10px; min-width: 40px; min-height: 40px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #f2f4f7; font: inherit; font-size: 22px; cursor: pointer; }
+        .photo-dialog-close:hover { background: #e4e7ec; }
         .photo-empty { display: grid; place-items: center; color: #98a2b3; font-size: 48px; }
         .candidate-body { display: flex; flex: 1; flex-direction: column; padding: 20px; }
         .number { align-self: flex-start; margin-bottom: 9px; padding: 5px 10px; border-radius: 99px; color: #a92d2d; background: #fff0ed; font-size: 12px; font-weight: 800; }
@@ -201,7 +209,7 @@ if ($hasValidatedToken) {
                     <?php foreach ($candidates as $candidate): ?>
                         <article class="candidate">
                             <?php if (!empty($candidate['photo_url']) && $candidate['photo_url'] !== 'default.jpg'): ?>
-                                <img class="photo" src="upload/<?= rawurlencode(basename($candidate['photo_url'])) ?>" alt="Foto <?= sanitize($candidate['name']) ?>">
+                                <img class="photo" src="upload/<?= rawurlencode(basename($candidate['photo_url'])) ?>" alt="Foto kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>" tabindex="0" role="button" aria-label="Perbesar foto kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>">
                             <?php else: ?>
                                 <div class="photo photo-empty" aria-label="Foto belum tersedia">◎</div>
                             <?php endif; ?>
@@ -236,6 +244,11 @@ if ($hasValidatedToken) {
 
         <footer>Pemilihan OSIS OSKANER · SMKN 6 Jember · <a class="admin-link" href="admin.php" style="display:inline">Admin</a></footer>
     </main>
+    <dialog class="photo-dialog" id="photo-dialog" aria-label="Foto kandidat">
+        <button class="photo-dialog-close" id="photo-dialog-close" type="button" aria-label="Tutup foto">×</button>
+        <img id="photo-dialog-image" alt="">
+        <p class="photo-dialog-caption" id="photo-dialog-caption"></p>
+    </dialog>
     <script>
         const tokenInput = document.getElementById('token');
         if (tokenInput) {
@@ -243,6 +256,31 @@ if ($hasValidatedToken) {
                 tokenInput.value = tokenInput.value.toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g, '').slice(0, 6);
             });
         }
+        const photoDialog = document.getElementById('photo-dialog');
+        const photoDialogImage = document.getElementById('photo-dialog-image');
+        const photoDialogCaption = document.getElementById('photo-dialog-caption');
+        function openCandidatePhoto(photo) {
+            photoDialogImage.src = photo.currentSrc || photo.src;
+            photoDialogImage.alt = photo.alt;
+            photoDialogCaption.textContent = photo.alt;
+            photoDialog.showModal();
+            document.getElementById('photo-dialog-close').focus();
+        }
+        document.querySelectorAll('img.photo[role="button"]').forEach((photo) => {
+            photo.addEventListener('click', () => openCandidatePhoto(photo));
+            photo.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openCandidatePhoto(photo);
+                }
+            });
+        });
+        document.getElementById('photo-dialog-close').addEventListener('click', () => photoDialog.close());
+        photoDialog.addEventListener('click', (event) => {
+            if (event.target === photoDialog) {
+                photoDialog.close();
+            }
+        });
         document.querySelectorAll('.candidate form').forEach((form) => {
             form.addEventListener('submit', (event) => {
                 if (!confirm(`Yakin memilih ${form.dataset.candidateName}? Suara tidak dapat diubah setelah dikirim.`)) {

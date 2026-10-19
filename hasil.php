@@ -61,7 +61,15 @@ $barGradients = [
         .rank-badge { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid #ffffff1c; border-radius: 10px; color: #cbd5e1; background: #ffffff0a; font-size: 12px; font-weight: 850; font-variant-numeric: tabular-nums; }
         .ranking-card.winner { border-color: #ffd70096; background: linear-gradient(100deg, #ffd70018, #ffffff08 70%); box-shadow: 0 0 23px #ffd70012, inset 0 0 0 1px #ffd70028; }
         .ranking-card.winner .rank-badge { border-color: #ffd70070; color: #1f2937; background: linear-gradient(145deg, #fff2a8, #eab308); }
-        .candidate-photo { width: 68px; height: 68px; display: block; flex: 0 0 68px; border: 1px solid #ffffff24; border-radius: 12px; object-fit: cover; background: #243047; }
+        .candidate-photo { width: 68px; height: 68px; display: block; flex: 0 0 68px; border: 1px solid #ffffff24; border-radius: 12px; object-fit: contain; background: #243047; }
+        img.candidate-photo { cursor: zoom-in; }
+        img.candidate-photo:focus-visible { outline: 3px solid #c4b5fd; outline-offset: 3px; }
+        .photo-dialog { width: min(94vw, 1000px); max-width: none; max-height: 92svh; padding: 52px 16px 16px; overflow: visible; border: 1px solid #ffffff30; border-radius: 18px; color: #f8fafc; background: #0b1220; box-shadow: 0 24px 90px #0009; }
+        .photo-dialog::backdrop { background: #020617e8; backdrop-filter: blur(7px); }
+        .photo-dialog img { display: block; width: 100%; max-height: calc(92svh - 84px); object-fit: contain; }
+        .photo-dialog-close { position: absolute; top: 10px; right: 10px; min-width: 40px; min-height: 40px; border: 1px solid #ffffff30; border-radius: 10px; color: #fff; background: #ffffff14; font: inherit; font-size: 22px; cursor: pointer; }
+        .photo-dialog-close:hover { background: #ffffff28; }
+        .photo-dialog-caption { margin: 12px 0 0; color: #cbd5e1; font-size: 14px; font-weight: 750; text-align: center; }
         .photo-fallback { display: grid; place-items: center; color: #cbd5e1; font-size: 24px; font-weight: 800; }
         .photo-fallback[hidden] { display: none; }
         .candidate-info { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
@@ -167,7 +175,7 @@ $barGradients = [
                     <article class="ranking-card<?= $isLeader ? ' winner' : '' ?>" data-id="<?= (int)$candidate['id'] ?>" style="--entry-delay: <?= (int)$index * 90 ?>ms" aria-label="Peringkat <?= $index + 1 ?>, kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>, <?= number_format($total) ?> suara<?= $isLeader ? ', perolehan tertinggi' : '' ?>">
                         <span class="rank-badge" aria-hidden="true">#<?= $index + 1 ?></span>
                         <?php if ($photo !== ''): ?>
-                            <img class="candidate-photo" src="<?= sanitize($photo) ?>" alt="Foto <?= sanitize($candidate['name']) ?>" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
+                            <img class="candidate-photo" src="<?= sanitize($photo) ?>" alt="Foto <?= sanitize($candidate['name']) ?>" tabindex="0" role="button" aria-label="Perbesar foto kandidat nomor <?= (int)$candidate['no_urut'] ?>, <?= sanitize($candidate['name']) ?>" onerror="this.hidden=true;this.nextElementSibling.hidden=false">
                             <span class="candidate-photo photo-fallback" aria-hidden="true" hidden>—</span>
                         <?php else: ?>
                             <span class="candidate-photo photo-fallback" aria-label="Foto belum tersedia">—</span>
@@ -214,6 +222,11 @@ $barGradients = [
             </div>
         </section>
     </main>
+    <dialog class="photo-dialog" id="photo-dialog" aria-label="Foto kandidat">
+        <button class="photo-dialog-close" id="photo-dialog-close" type="button" aria-label="Tutup foto">×</button>
+        <img id="photo-dialog-image" alt="">
+        <p class="photo-dialog-caption" id="photo-dialog-caption"></p>
+    </dialog>
     <p class="status" id="update-status" role="status" aria-live="polite"></p>
     <a class="admin-link" href="admin.php">Dashboard panitia</a>
     <script>
@@ -221,7 +234,35 @@ $barGradients = [
         const chartColumns = document.getElementById('chart-columns');
         const totalElement = document.getElementById('total-votes');
         const updateStatus = document.getElementById('update-status');
+        const photoDialog = document.getElementById('photo-dialog');
+        const photoDialogImage = document.getElementById('photo-dialog-image');
+        const photoDialogCaption = document.getElementById('photo-dialog-caption');
         let previousTotalVotes = <?= $totalVotes ?>;
+
+        function openCandidatePhoto(photo) {
+            photoDialogImage.src = photo.currentSrc || photo.src;
+            photoDialogImage.alt = photo.alt;
+            photoDialogCaption.textContent = photo.getAttribute('aria-label').replace('Perbesar foto ', '');
+            photoDialog.showModal();
+            document.getElementById('photo-dialog-close').focus();
+        }
+
+        document.querySelectorAll('img.candidate-photo[role="button"]').forEach((photo) => {
+            photo.addEventListener('click', () => openCandidatePhoto(photo));
+            photo.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openCandidatePhoto(photo);
+                }
+            });
+        });
+
+        document.getElementById('photo-dialog-close').addEventListener('click', () => photoDialog.close());
+        photoDialog.addEventListener('click', (event) => {
+            if (event.target === photoDialog) {
+                photoDialog.close();
+            }
+        });
 
         function flashNumber(element) {
             element.classList.remove('flash-number');
